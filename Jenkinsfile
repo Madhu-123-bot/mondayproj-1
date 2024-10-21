@@ -50,10 +50,10 @@ pipeline {
 
   post {
     always {
-      // Optionally, you can clean up Docker images
       script {
         try {
-          dockerImage.remove()  // Removes the built Docker image to free up space
+          // Clean up the Docker image
+          docker.image("containerguru1/mondayproj-1").remove()  // Corrected cleanup command
         } catch (Exception e) {
           echo "Image cleanup failed: ${e}"
         }

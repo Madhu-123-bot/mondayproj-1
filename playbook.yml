@@ -1,65 +1,56 @@
-- remote_user: ubuntu
-  hosts: all
+- hosts: all
+  remote_user: ubuntu
   become: yes
   tasks:
 
-    # stopping the Docker container
-    - name: stop Docker container
+    # Stop Docker container
+    - name: Stop Docker container
       docker_container:
         name: my_container
         image: containerguru1/mondayproj-1
         state: stopped
-        restart_policy: always
         ports:
-          - "81:80"  # Adjust the ports as needed
-    
-    # removing the Docker container
-    - name: Remove container
+          - "81:80"
+
+    # Remove Docker container
+    - name: Remove Docker container
       docker_container:
         name: my_container
-        image:  containerguru1/mondayproj-1
-        state:  absent
+        image: containerguru1/mondayproj-1
+        state: absent
 
-
-    # removing the Docker images
-    - name: Removing the images
+    # Remove old Docker image (Optional)
+    - name: Remove Docker image
       docker_image:
-        name: my_container
-        image:  containerguru1/mondayproj-1
-        state:  absent
-        restart_policy: always
-        ports:
-          - "81:80"  # Adjust the ports as needed
-        
+        name: containerguru1/mondayproj-1
+        state: absent
 
-    # Installing the docker container
-    - name: Installing docker_container
+    # Ensure Docker is installed
+    - name: Ensure Docker is installed
       apt:
         name: docker.io
-        state:  present
+        state: present
+        update_cache: yes
 
-
-    # Moved Docker login before pulling the image
+    # Docker Hub Login
     - name: Log in to Docker Hub
       docker_login:
         username: "containerguru1"
         password: "Madmithra!27"
 
-
-    # Pull Docker from the dockerhub credentials
+    # Pull the latest Docker image from Docker Hub
     - name: Pull Docker image from Docker Hub
       docker_image:
         name: containerguru1/mondayproj-1
         tag: latest
         source: pull
 
-
-    # Running the images Docker container
-    - name: Run Docker container
+    # Start a new Docker container with the latest image
+    - name: Start Docker container
       docker_container:
         name: my_container
         image: containerguru1/mondayproj-1
         state: started
         restart_policy: always
         ports:
-          - "81:80"  # Adjust the ports as needed
+          - "81:80"
