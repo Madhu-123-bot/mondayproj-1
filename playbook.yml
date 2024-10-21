@@ -1,68 +1,48 @@
-- remote_user: ubuntu
+---
+- name: Deploy Docker container on EC2
   hosts: all
   become: yes
+  vars:
+    docker_image: "containerguru1/mondayproj-1"  # Docker image name
+    docker_tag: "latest"  # Tag of the Docker image
+
   tasks:
 
-    - name: Ensure docker is installed
-      apt:
+    - name: Ensure Docker is installed
+      package:
         name: docker.io
         state: present
 
-    - name: Start Docker service
-      ansible.builtin.systemd:
+    - name: Ensure Docker service is started
+      service:
         name: docker
         state: started
-        enabled: yes
-
-    - name: Ensure ubuntu user is in the docker group
-      ansible.builtin.user:
-        name: ubuntu
-        groups: docker
-        append: yes
+        enabled: true
 
     - name: Log in to Docker Hub
       docker_login:
-        username: "containerguru1"
-        password: "Madmithra!27"
+        username: "containerguru1"  # Replace with your Docker Hub username
+        password: "Madmithra!27"  # Replace with your Docker Hub password
 
-    - name: Check if the image exists locally
-      command: docker images containerguru1/mondayproj-1:latest
-      register: image_check
-      ignore_errors: true
-
-    - name: Pull the image from Docker Hub if not exists
-      docker_image:
-        name: containerguru1/mondayproj-1
-        tag: latest
-        source: pull
-      when: image_check.rc != 0
-
-    - name: Stop Docker container
+    - name: Stop and remove existing container (if any)
       docker_container:
-        name: mondayproj1
-        image: containerguru1/mondayproj-1
-        state: stopped
-
-    - name: Remove Docker container
-      docker_container:
-        name: mondayproj1
-        image: containerguru1/mondayproj-1
+        name: mondayproj-1
         state: absent
+      ignore_errors: true  # Ignore if the container doesn't exist
 
     - name: Pull Docker image from Docker Hub
       docker_image:
-        name: mondayproj1
-        tag: latest
+        name: "{{ docker_image }}"
+        tag: "{{ docker_tag }}"
         source: pull
 
     - name: Run Docker container
       docker_container:
-        name: mondayproj1  # Container name
-        image: mondayproj1  # Image name
+        name: mondayproj-1
+        image: "{{ docker_image }}:{{ docker_tag }}"
         state: started
         restart_policy: always
-        ports:
-          - "81:80"
-
- 
-
+        exposed_ports:
+          - "81"
+        published_ports:
+          - "81:81"  # Change if necessary
