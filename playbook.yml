@@ -22,17 +22,17 @@
 
     - name: Stop Docker container
       docker_container:
-        name: containerguru1/mondayproj-1
+        name: mondayproj1
         state: stopped
 
     - name: Remove Docker container
       docker_container:
-        name: containerguru1/mondayproj-1
+        name: mondayproj1
         state: absent
 
     - name: Remove Docker image
       docker_image:
-        name: containerguru1/mondayproj-1
+        name: mondayproj1
         state: absent
 
     - name: Log in to Docker Hub
