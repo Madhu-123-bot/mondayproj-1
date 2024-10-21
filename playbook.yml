@@ -20,27 +20,34 @@
         groups: docker
         append: yes
 
+    - name: Log in to Docker Hub
+      docker_login:
+        username: "containerguru1"
+        password: "Madmithra!27"
+
+    - name: Check if the image exists locally
+      command: docker images containerguru1/mondayproj-1:latest
+      register: image_check
+      ignore_errors: true
+
+    - name: Pull the image from Docker Hub if not exists
+      docker_image:
+        name: containerguru1/mondayproj-1
+        tag: latest
+        source: pull
+      when: image_check.rc != 0
+
     - name: Stop Docker container
       docker_container:
         name: mondayproj1
-        image: mondayproj1  # Specify the image
+        image: containerguru1/mondayproj-1
         state: stopped
 
     - name: Remove Docker container
       docker_container:
         name: mondayproj1
-        image: mondayproj1  # Specify the image
+        image: containerguru1/mondayproj-1
         state: absent
-
-    - name: Remove Docker image
-      docker_image:
-        name: mondayproj1
-        state: absent
-
-    - name: Log in to Docker Hub
-      docker_login:
-        username: "containerguru1"
-        password: "Madmithra!27"
 
     - name: Pull Docker image from Docker Hub
       docker_image:
@@ -56,3 +63,6 @@
         restart_policy: always
         ports:
           - "81:80"
+
+ 
+
