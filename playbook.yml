@@ -1,0 +1,65 @@
+- remote_user: ubuntu
+  hosts: all
+  become: yes
+  tasks:
+
+    # stopping the Docker container
+    - name: stop Docker container
+      docker_container:
+        name: my_container
+        image: containerguru1/mondayproj-1
+        state: stopped
+        restart_policy: always
+        ports:
+          - "81:80"  # Adjust the ports as needed
+    
+    # removing the Docker container
+    - name: Remove container
+      docker_container:
+        name: my_container
+        image:  containerguru1/mondayproj-1
+        state:  absent
+
+
+    # removing the Docker images
+    - name: Removing the images
+      docker_image:
+        name: my_container
+        image:  containerguru1/mondayproj-1
+        state:  absent
+        restart_policy: always
+        ports:
+          - "81:80"  # Adjust the ports as needed
+        
+
+    # Installing the docker container
+    - name: Installing docker_container
+      apt:
+        name: docker.io
+        state:  present
+
+
+    # Moved Docker login before pulling the image
+    - name: Log in to Docker Hub
+      docker_login:
+        username: "containerguru1"
+        password: "Madmithra!27"
+
+
+    # Pull Docker from the dockerhub credentials
+    - name: Pull Docker image from Docker Hub
+      docker_image:
+        name: containerguru1/mondayproj-1
+        tag: latest
+        source: pull
+
+
+    # Running the images Docker container
+    - name: Run Docker container
+      docker_container:
+        name: my_container
+        image: containerguru1/mondayproj-1
+        state: started
+        restart_policy: always
+        ports:
+          - "81:80"  # Adjust the ports as needed
