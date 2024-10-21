@@ -1,4 +1,5 @@
 ---
+
 - name: Deploy Docker container on EC2
   hosts: all
   become: yes
@@ -45,4 +46,4 @@
         exposed_ports:
           - "81"
         published_ports:
-          - "81:81"  # Change if necessary
+          - "81:80"  # Change if necessary
