@@ -1,52 +1,52 @@
-- hosts: all
-  remote_user: ubuntu
+- remote_user: ubuntu
+  hosts: all
   become: yes
   tasks:
 
-    # Stop Docker container
+    - name: Ensure docker is installed
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Start Docker service
+      ansible.builtin.systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Ensure ubuntu user is in the docker group
+      ansible.builtin.user:
+        name: ubuntu
+        groups: docker
+        append: yes
+
     - name: Stop Docker container
       docker_container:
         name: my_container
-        image: containerguru1/mondayproj-1
         state: stopped
-        ports:
-          - "81:80"
 
-    # Remove Docker container
     - name: Remove Docker container
       docker_container:
         name: my_container
-        image: containerguru1/mondayproj-1
         state: absent
 
-    # Remove old Docker image (Optional)
     - name: Remove Docker image
       docker_image:
         name: containerguru1/mondayproj-1
         state: absent
 
-    # Ensure Docker is installed
-    - name: Ensure Docker is installed
-      apt:
-        name: docker.io
-        state: present
-        update_cache: yes
-
-    # Docker Hub Login
     - name: Log in to Docker Hub
       docker_login:
         username: "containerguru1"
         password: "Madmithra!27"
 
-    # Pull the latest Docker image from Docker Hub
     - name: Pull Docker image from Docker Hub
       docker_image:
         name: containerguru1/mondayproj-1
         tag: latest
         source: pull
 
-    # Start a new Docker container with the latest image
-    - name: Start Docker container
+    - name: Run Docker container
       docker_container:
         name: my_container
         image: containerguru1/mondayproj-1
