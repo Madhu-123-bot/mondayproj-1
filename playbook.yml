@@ -23,11 +23,13 @@
     - name: Stop Docker container
       docker_container:
         name: mondayproj1
+        image: mondayproj1  # Specify the image
         state: stopped
 
     - name: Remove Docker container
       docker_container:
         name: mondayproj1
+        image: mondayproj1  # Specify the image
         state: absent
 
     - name: Remove Docker image
@@ -42,14 +44,14 @@
 
     - name: Pull Docker image from Docker Hub
       docker_image:
-        name: containerguru1/mondayproj-1
+        name: mondayproj1
         tag: latest
         source: pull
 
     - name: Run Docker container
       docker_container:
-        name: my_container
-        image: containerguru1/mondayproj-1
+        name: mondayproj1  # Container name
+        image: mondayproj1  # Image name
         state: started
         restart_policy: always
         ports:
