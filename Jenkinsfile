@@ -52,9 +52,8 @@ pipeline {
     always {
       script {
         try {
-          // Ensure the Docker image cleanup method is correct
-          def dockerImage = docker.image("containerguru1/mondayproj-1")
-          dockerImage.remove()  // Remove the Docker image after deployment
+          // Remove Docker image
+          docker.image('containerguru1/mondayproj-1').remove()
         } catch (Exception e) {
           echo "Image cleanup failed: ${e.getMessage()}"
         }
